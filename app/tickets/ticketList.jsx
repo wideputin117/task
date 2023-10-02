@@ -1,11 +1,7 @@
- // this page renders all the tickets in a list that are in database //
+// this page renders all the tickets in a list that are in database //
 'use client'
- import Link from "next/link";
- 
-
- // this used to fetch data from server
+import Link from "next/link";
 import { useState, useEffect } from "react";
- 
 
 async function getList() {
     const res = await fetch("https://jsonplaceholder.typicode.com/users", {
@@ -20,20 +16,51 @@ async function getList() {
 export default function TicketList() {
     const [searchTerm, setSearchTerm] = useState("");
     const [tickets, setTickets] = useState([]);
+    const [sortOrder, setSortOrder] = useState({
+        name: "none",
+        username: "none",
+    });
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
     };
 
+    const handleSort = (property) => {
+        const newSortOrder = { ...sortOrder };
+        if (newSortOrder[property] === "none" || newSortOrder[property] === "desc") {
+            newSortOrder[property] = "asc";
+        } else {
+            newSortOrder[property] = "desc";
+        }
+        setSortOrder(newSortOrder);
+    };
+
+    const handleReset = () => {
+        setSortOrder({
+            name: "none",
+            username: "none",
+        });
+    };
+
     const filterTickets = (ticket) => {
-        const { id, name, username } = ticket;
+        const { address, name, username } = ticket;
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
         return (
-            id.toString().includes(lowerCaseSearchTerm) ||
+            address.city.toLowerCase().includes(lowerCaseSearchTerm) ||
             name.toLowerCase().includes(lowerCaseSearchTerm) ||
             username.toLowerCase().includes(lowerCaseSearchTerm)
         );
+    };
+
+    const sortTickets = (tickets, property, order) => {
+        if (order === "asc") {
+            return [...tickets].sort((a, b) => a[property].localeCompare(b[property]));
+        } else if (order === "desc") {
+            return [...tickets].sort((a, b) => b[property].localeCompare(a[property]));
+        } else {
+            return tickets;
+        }
     };
 
     useEffect(() => {
@@ -51,13 +78,36 @@ export default function TicketList() {
                 <input
                     type="text"
                     className="form-control"
-                    placeholder="Search by ID, Name, or Username"
+                    placeholder="Search by Username, Name, or City"
                     value={searchTerm}
                     onChange={handleSearch}
                 />
             </div>
 
-            {tickets
+            <div className="flex-auto mb-3">
+                <button
+                    className="flex btn btn-primary me-2"
+                    onClick={() => handleSort("name")}
+                >
+                    Sort by Name {sortOrder.name === "asc" && <span>&uarr;</span>}
+                    {sortOrder.name === "desc" && <span>&darr;</span>}
+                </button>
+                <button
+                    className="btn btn-primary flex"
+                    onClick={() => handleSort("username")}
+                >
+                    Sort by Username {sortOrder.username === "asc" && <span>&uarr;</span>}
+                    {sortOrder.username === "desc" && <span>&darr;</span>}
+                </button>
+                <button
+                    className="btn btn-secondary ms-2 flex"
+                    onClick={handleReset}
+                >
+                    Reset
+                </button>
+            </div>
+
+            {sortTickets(tickets.filter(filterTickets), "name", sortOrder.name)
                 .filter(filterTickets)
                 .map((ticket) => (
                     <div key={ticket.id} className="card my-5">

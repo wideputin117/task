@@ -15,16 +15,9 @@ export const dynamicParams = true;
 // function for static rendering this boosts the app performance //
 
 // this functions already fetches all tickets which makes site static render and boost the performance
-/*export async function generateStaticParams(){
-  const res = await fetch(`http://localhost:4000/tickets/`);
-  const tickets = await res.json();
+ 
 
-  return tickets.map((ticket)=>({
-    id: ticket.id,
-  }))
-}
-
-*/
+ 
 async function ticketList(id){
    // creating a promise to make a delay
        // remove comments from this function to check out the loading page
