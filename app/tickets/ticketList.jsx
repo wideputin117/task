@@ -107,8 +107,7 @@ export default function TicketList() {
                 </button>
             </div>
 
-            {sortTickets(tickets.filter(filterTickets), "name", sortOrder.name)
-                .filter(filterTickets)
+            {sortTickets(tickets.filter(filterTickets), "name", sortOrder.name).filter(filterTickets)
                 .map((ticket) => (
                     <div key={ticket.id} className="card my-5">
                         <Link href={`tickets/${ticket.id}`}>
