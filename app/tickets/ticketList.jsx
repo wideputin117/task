@@ -21,10 +21,12 @@ export default function TicketList() {
         username: "none",
     });
 
+    // to search  for an value
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
     };
 
+    // to sort the list in ascending or descending
     const handleSort = (property) => {
         const newSortOrder = { ...sortOrder };
         if (newSortOrder[property] === "none" || newSortOrder[property] === "desc") {
@@ -35,6 +37,7 @@ export default function TicketList() {
         setSortOrder(newSortOrder);
     };
 
+    // function to reset the search bar
     const handleReset = () => {
         setSortOrder({
             name: "none",
@@ -42,6 +45,7 @@ export default function TicketList() {
         });
     };
 
+    // helper func to filter the tickets
     const filterTickets = (ticket) => {
         const { address, name, username } = ticket;
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -69,7 +73,7 @@ export default function TicketList() {
             setTickets(tickets);
         };
 
-        fetchData();
+        fetchData(); // calling the function to fetch the data
     }, []);
 
     return (
@@ -110,7 +114,7 @@ export default function TicketList() {
             {sortTickets(tickets.filter(filterTickets), "name", sortOrder.name).filter(filterTickets)
                 .map((ticket) => (
                     <div key={ticket.id} className="card my-5">
-                        <Link href={`tickets/${ticket.id}`}>
+                        <Link href={`tickets/${ticket.id}`}>      {/* this line makes all the shown tickets here a dynamic route */}
                             <h3>id: {ticket.id}</h3>
                             <p>
                                 Name: {ticket.name}
